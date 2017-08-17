@@ -7,13 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D4D1F4622DA00D610B2 /* MenuExt.swift */; };
+		521C1D571F46238900D610B2 /* UrlExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D561F46238900D610B2 /* UrlExt.swift */; };
+		521C1D591F46246A00D610B2 /* BoolExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D581F46246A00D610B2 /* BoolExt.swift */; };
+		521C1D5B1F4624E200D610B2 /* ImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D5A1F4624E200D610B2 /* ImageExt.swift */; };
+		521C1D5D1F46253900D610B2 /* LayoutConstraintExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */; };
+		521C1D5F1F46259C00D610B2 /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D5E1F46259C00D610B2 /* ViewExt.swift */; };
+		523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */; };
+		523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */; };
+		524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524570431F4633C800053D45 /* AnimationContextExt.swift */; };
 		52AA111C1F44DC2F008786F2 /* Fez.h in Headers */ = {isa = PBXBuildFile; fileRef = 52AA111A1F44DC2F008786F2 /* Fez.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		521C1D4D1F4622DA00D610B2 /* MenuExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuExt.swift; sourceTree = "<group>"; };
+		521C1D561F46238900D610B2 /* UrlExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlExt.swift; sourceTree = "<group>"; };
+		521C1D581F46246A00D610B2 /* BoolExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoolExt.swift; sourceTree = "<group>"; };
+		521C1D5A1F4624E200D610B2 /* ImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExt.swift; sourceTree = "<group>"; };
+		521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConstraintExt.swift; sourceTree = "<group>"; };
+		521C1D5E1F46259C00D610B2 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
+		524570431F4633C800053D45 /* AnimationContextExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationContextExt.swift; sourceTree = "<group>"; };
 		52AA11171F44DC2F008786F2 /* Fez.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fez.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52AA111A1F44DC2F008786F2 /* Fez.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fez.h; sourceTree = "<group>"; };
 		52AA111B1F44DC2F008786F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestingTextField.swift; sourceTree = "<group>"; };
+		52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
+		52AA11251F44DEFC008786F2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,9 +46,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		521C1D431F46223A00D610B2 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				521C1D4D1F4622DA00D610B2 /* MenuExt.swift */,
+				521C1D561F46238900D610B2 /* UrlExt.swift */,
+				521C1D581F46246A00D610B2 /* BoolExt.swift */,
+				521C1D5A1F4624E200D610B2 /* ImageExt.swift */,
+				521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */,
+				521C1D5E1F46259C00D610B2 /* ViewExt.swift */,
+				524570431F4633C800053D45 /* AnimationContextExt.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		52AA110D1F44DC2F008786F2 = {
 			isa = PBXGroup;
 			children = (
+				52AA11251F44DEFC008786F2 /* README.md */,
 				52AA11191F44DC2F008786F2 /* Fez */,
 				52AA11181F44DC2F008786F2 /* Products */,
 			);
@@ -46,10 +80,21 @@
 		52AA11191F44DC2F008786F2 /* Fez */ = {
 			isa = PBXGroup;
 			children = (
+				521C1D431F46223A00D610B2 /* Extensions */,
+				52AA11221F44DE18008786F2 /* Suggestions */,
 				52AA111A1F44DC2F008786F2 /* Fez.h */,
 				52AA111B1F44DC2F008786F2 /* Info.plist */,
 			);
 			path = Fez;
+			sourceTree = "<group>";
+		};
+		52AA11221F44DE18008786F2 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */,
+				52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */,
+			);
+			path = Suggestions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,6 +140,7 @@
 				TargetAttributes = {
 					52AA11161F44DC2F008786F2 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0900;
 					};
 				};
 			};
@@ -130,6 +176,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				521C1D5D1F46253900D610B2 /* LayoutConstraintExt.swift in Sources */,
+				521C1D5B1F4624E200D610B2 /* ImageExt.swift in Sources */,
+				523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */,
+				521C1D571F46238900D610B2 /* UrlExt.swift in Sources */,
+				521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */,
+				523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */,
+				524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */,
+				521C1D5F1F46259C00D610B2 /* ViewExt.swift in Sources */,
+				521C1D591F46246A00D610B2 /* BoolExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,7 +240,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -239,7 +294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -251,6 +306,7 @@
 		52AA11201F44DC2F008786F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -264,6 +320,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = maciej.Fez;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -271,6 +328,7 @@
 		52AA11211F44DC2F008786F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;

@@ -13,20 +13,42 @@ public protocol Suggestable: class {
 }
 
 public protocol SuggestionDelegate {
+    /// Return a view, simmilar to how NSTableViewDelegate works
     func viewFor(_ tableView: NSTableView, item: Suggestable) -> NSView;
+    /// Pool of suggestions
     func suggestionFor(_ textField: SuggestingTextField) -> [Suggestable];
+    /// Return a new instance of the view controller
     func controllerFor(_ textField: SuggestingTextField) -> SuggestionsViewController;
+    /// Default limit is set to 10
+    func suggestionLimit(_ textField: SuggestingTextField) -> Int
+}
+
+public extension SuggestionDelegate {
+    func suggestionLimit(_ textField: SuggestingTextField) -> Int {
+        return 10
+    }
 }
 
 public class SuggestingTextField: NSTextField {
+    /// Delegate
     public var suggestionDelegate: SuggestionDelegate?
-    
-    private var suggestionsWindow: NSWindow?
-    private var suggestionsViewController: SuggestionsViewController?
+    private var suggestionsController: SuggestionsViewController?
     
     public override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
+    }
+    
+    public override func becomeFirstResponder() -> Bool {
+        super.becomeFirstResponder()
+        if suggestionsController == nil {
+            let ctrl = suggestionDelegate!.controllerFor(self)
+            ctrl.owningTextField = self
+            suggestionsController = ctrl
+        }
+        
+        suggestionsController?.show(suggestionDelegate!.suggestionFor(self))
+        return true
     }
 }
 
@@ -35,49 +57,29 @@ extension SuggestingTextField: NSTextFieldDelegate {
                         textView: NSTextView,
                         doCommandBy commandSelector: Selector) -> Bool {
         if commandSelector == #selector(moveUp(_:)) {
-            print("up")
+            suggestionsController?.moveUp(self)
             return true
             
         } else if commandSelector == #selector(moveDown(_:)) {
-            print("down")
+            suggestionsController?.moveDown(self)
             return true
             
         } else if commandSelector == #selector(cancelOperation(_:)) {
-            suggestionsWindow?.close()
+            suggestionsController?.close()
             return true
         }
         return false
     }
     
-    public override func textDidBeginEditing(_ notification: Notification) {
-        super.textDidBeginEditing(notification)
-        
-        if suggestionsWindow == nil {
-            let ctrl = suggestionDelegate!.controllerFor(self)
-            let window = NSWindow(contentViewController: ctrl)
-            window.styleMask = [.borderless]
-            
-            window.parent = self.window // Pair the windows (self important!)
-            suggestionsWindow = window
-            suggestionsViewController = ctrl
-        }
-        
-        let movedBounds = bounds.offsetBy(dx: 0, dy: bounds.height)
-        let frame = window!.convertToScreen(convert(movedBounds, to: nil))
-        suggestionsWindow!.setFrame(frame, display: false)
-        suggestionsWindow!.makeKeyAndOrderFront(self)
-    }
-    
     public override func textDidChange(_ notification: Notification) {
         super.textDidChange(notification)
-        if !suggestionsWindow!.isVisible {
-            suggestionsWindow!.orderFront(self)
-        }
-        suggestionsViewController?.showItems([])
+        suggestionsController?.show(suggestionDelegate!.suggestionFor(self).filter {
+            $0.title.lowercased().contains(stringValue.lowercased()) || stringValue.isEmpty
+        })
     }
     
     public override func textDidEndEditing(_ notification: Notification) {
         super.textDidEndEditing(notification)
-        suggestionsWindow?.close()
+        suggestionsController?.close()
     }
 }

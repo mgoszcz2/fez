@@ -16,6 +16,7 @@
 		523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */; };
 		523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */; };
 		524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524570431F4633C800053D45 /* AnimationContextExt.swift */; };
+		528E1C8F1F47479000A13C82 /* WindowExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528E1C8E1F47479000A13C82 /* WindowExt.swift */; };
 		52AA111C1F44DC2F008786F2 /* Fez.h in Headers */ = {isa = PBXBuildFile; fileRef = 52AA111A1F44DC2F008786F2 /* Fez.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConstraintExt.swift; sourceTree = "<group>"; };
 		521C1D5E1F46259C00D610B2 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		524570431F4633C800053D45 /* AnimationContextExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationContextExt.swift; sourceTree = "<group>"; };
+		528E1C8E1F47479000A13C82 /* WindowExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExt.swift; sourceTree = "<group>"; };
 		52AA11171F44DC2F008786F2 /* Fez.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fez.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52AA111A1F44DC2F008786F2 /* Fez.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fez.h; sourceTree = "<group>"; };
 		52AA111B1F44DC2F008786F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 				521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */,
 				521C1D5E1F46259C00D610B2 /* ViewExt.swift */,
 				524570431F4633C800053D45 /* AnimationContextExt.swift */,
+				528E1C8E1F47479000A13C82 /* WindowExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -183,6 +186,7 @@
 				521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */,
 				523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */,
 				524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */,
+				528E1C8F1F47479000A13C82 /* WindowExt.swift in Sources */,
 				521C1D5F1F46259C00D610B2 /* ViewExt.swift in Sources */,
 				521C1D591F46246A00D610B2 /* BoolExt.swift in Sources */,
 			);

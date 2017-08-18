@@ -18,6 +18,11 @@ public extension NSView.AutoresizingMask {
 }
 
 public extension NSView {
+    /// Frame of the view on screen
+    var screenFrame: NSRect {
+        return window!.convertToScreen(convert(bounds, to: nil))
+    }
+    
     /// Get a view with identifier
     func viewWith(identifier: NSUserInterfaceItemIdentifier) -> NSView? {
         for view in subviews {

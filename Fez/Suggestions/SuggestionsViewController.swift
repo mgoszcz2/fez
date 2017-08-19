@@ -13,10 +13,10 @@ public class SuggestionsViewController: NSViewController {
     @IBOutlet public weak var tableView: NSTableView!
     /// Text field which owns this view controller.
     /// Only set after is is returned by the delegate method
-    public var owningTextField: SuggestingTextField!
+    public weak var owningTextField: SuggestingTextField!
     
     private var localEventMonitor: Any?
-    private weak var window: NSWindow?
+    private var window: NSWindow?
     private var showItems: [Suggestable] = []
 
     override public func viewDidLoad() {
@@ -27,16 +27,24 @@ public class SuggestionsViewController: NSViewController {
     
     // Do not call super in both. Just not implemented
     public override func moveDown(_ sender: Any?) {
-        tableView.selectRowIndexes([tableView.selectedRow + 1], byExtendingSelection: false)
-        NSAnimationContext.withDuration(0) {
-            tableView.scrollRowToVisible(tableView.selectedRow)
-        }
+        setSelectedRow(tableView.selectedRow + 1)
     }
     
     public override func moveUp(_ sender: Any?) {
-        tableView.selectRowIndexes([tableView.selectedRow - 1], byExtendingSelection: false)
-        NSAnimationContext.withDuration(0) {
-            tableView.scrollRowToVisible(tableView.selectedRow)
+        setSelectedRow(tableView.selectedRow - 1)
+    }
+    
+    private func setSelectedRow(_ ix: Int) {
+        if ix < 0 || ix >= tableView.numberOfRows { return }
+        tableView.selectRowIndexes([ix], byExtendingSelection: false)
+        //FIXME: Slow
+        tableView.scrollRowToVisible(tableView.selectedRow)
+    }
+    
+    deinit {
+        if let monitor = localEventMonitor {
+            NSEvent.removeMonitor(monitor)
+            localEventMonitor = nil
         }
     }
 }
@@ -46,33 +54,48 @@ extension SuggestionsViewController {
     func show(_ items: [Suggestable]) {
         showItems = items
         show()
+        setSelectedRow(0)
     }
     
     private func processEvent(_ event: NSEvent) {
         // We can click inside this window
-        if event.window == self.window { return }
+        if event.window == window { return }
         
-        if event.window == self.owningTextField.window {
-            // Do not if we clicked inside text field
+        if event.window == owningTextField.window {
+            // Note: Hitting nil should also close window
             let hit = event.window?.hitTest(event)
-            if hit != self.owningTextField && hit != self.owningTextField.currentEditor() {
-                self.window?.close()
+            if hit != nil && (hit == owningTextField || hit == owningTextField.currentEditor()) {
+                show()
             } else {
-                self.show()
+                close()
             }
         } else {
-            self.window?.close()
+            close()
         }
     }
     
-    private func show() {
+    func show() {
         if window == nil {
-            let window = NSWindow(contentViewController: self)
-            window.styleMask = [.borderless]
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 20, height: 20),
+                                  styleMask: .borderless,
+                                  backing: .buffered,
+                                  defer: false) // Do not defer
             window.hasShadow = true
-            self.window = window
-            owningTextField.window!.addChildWindow(window, ordered: .above)
+            window.isOpaque = false
+            window.backgroundColor = .clear
+            window.animationBehavior = .utilityWindow
             
+            let effect = NSVisualEffectView(frame: NSRect(origin: .zero,
+                                                          size: window.frame.size))
+            effect.material = .menu
+            effect.state = .active
+            effect.addSubview(view)
+            view.frame = effect.bounds
+            view.autoresizingMask = .fill
+            
+            window.contentView = effect
+            self.window = window
+
             // Close when we select a different app
             NotificationCenter.default.addObserver(self,
                                                    selector: #selector(close),
@@ -80,43 +103,46 @@ extension SuggestionsViewController {
                                                    object: owningTextField.window!)
             // Close when we click outside
             let mask: NSEvent.EventTypeMask = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
-            localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { event in
-                self.processEvent(event)
+            // Weak self important since deinit removes this
+            localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: mask) { [weak self] event in
+                self?.processEvent(event)
                 return event
             }
         }
         
         // Change frame
         tableView.reloadData()
+        window!.setFrame(calculateFrame(), display: true)
+        
+        if !window!.isVisible {
+            // For some stupid reason we need to do this here
+            // Otherwise it does not register as a child
+            // CustomMenus also does it in this order, but fails to mention why
+            // Also orderOut removes the child so we don't care ourselves
+            owningTextField.window!.addChildWindow(self.window!, ordered: .above)
+            window!.orderFront(self)
+        }
+    }
+    
+    private func calculateFrame() -> NSRect {
         let lastRow = min(tableView.numberOfRows - 1,
-                          owningTextField.suggestionDelegate!.suggestionLimit(owningTextField) - 1)
+                          owningTextField.suggestionsLimit - 1)
         let lastRowRect = tableView.convert(tableView.rect(ofRow: max(lastRow, 0)), to: view)
         let height: CGFloat = view.bounds.height - lastRowRect.minY
         var frame = owningTextField.screenFrame
             .offsetBy(dx: 0, dy: -height - 3)
         frame.size.height = height
-        window!.setFrame(frame,
-                         display: true)
-        
-        if !window!.isVisible {
-            window!.orderFront(self)
-        }
+        return frame
     }
     
     // Called by SuggestingTextField also
     @objc func close() {
-        if let monitor = localEventMonitor {
-            NSEvent.removeMonitor(monitor)
-            localEventMonitor = nil
-        }
-        window?.close()
+        window?.orderOut(self)
     }
 }
 
 extension SuggestionsViewController: NSTableViewDelegate {
     public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        //FIXME: Neccesary?
-//        if showItems.count <= row { return nil }
         return owningTextField.suggestionDelegate?.viewFor(tableView, item: showItems[row])
     }
 }

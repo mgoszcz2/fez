@@ -12,26 +12,21 @@ public protocol Suggestable: class {
     var title: String { get }
 }
 
-public protocol SuggestionDelegate {
+public protocol SuggestionDelegate: class {
     /// Return a view, simmilar to how NSTableViewDelegate works
     func viewFor(_ tableView: NSTableView, item: Suggestable) -> NSView;
     /// Pool of suggestions
     func suggestionFor(_ textField: SuggestingTextField) -> [Suggestable];
     /// Return a new instance of the view controller
     func controllerFor(_ textField: SuggestingTextField) -> SuggestionsViewController;
-    /// Default limit is set to 10
-    func suggestionLimit(_ textField: SuggestingTextField) -> Int
 }
 
-public extension SuggestionDelegate {
-    func suggestionLimit(_ textField: SuggestingTextField) -> Int {
-        return 10
-    }
-}
-
-public class SuggestingTextField: NSTextField {
+public class SuggestingTextField: NSSearchField {
     /// Delegate
-    public var suggestionDelegate: SuggestionDelegate?
+    public weak var suggestionDelegate: SuggestionDelegate?
+    /// Maximum number of suggestions
+    @IBInspectable public var suggestionsLimit: Int = 10
+    
     private var suggestionsController: SuggestionsViewController?
     
     public override func awakeFromNib() {
@@ -41,6 +36,8 @@ public class SuggestingTextField: NSTextField {
     
     public override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
+        if suggestionsLimit <= 0 { return true }
+        
         if suggestionsController == nil {
             let ctrl = suggestionDelegate!.controllerFor(self)
             ctrl.owningTextField = self
@@ -50,9 +47,14 @@ public class SuggestingTextField: NSTextField {
         suggestionsController?.show(suggestionDelegate!.suggestionFor(self))
         return true
     }
+
+    // Close suggestions window externally
+    public func closeSuggestions() {
+        suggestionsController?.close()
+    }
 }
 
-extension SuggestingTextField: NSTextFieldDelegate {
+extension SuggestingTextField: NSSearchFieldDelegate {
     public func control(_ control: NSControl,
                         textView: NSTextView,
                         doCommandBy commandSelector: Selector) -> Bool {
@@ -66,6 +68,8 @@ extension SuggestingTextField: NSTextFieldDelegate {
             
         } else if commandSelector == #selector(cancelOperation(_:)) {
             suggestionsController?.close()
+            return true
+        } else if commandSelector == #selector(insertNewline(_:)) {
             return true
         }
         return false

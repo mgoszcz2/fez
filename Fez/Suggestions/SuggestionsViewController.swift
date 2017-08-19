@@ -24,34 +24,36 @@ private func maskImage(radius: CGFloat) -> NSImage {
     return maskImage
 }
 
-public class SuggestionsViewController: NSViewController {
+open class SuggestionsViewController: NSViewController {
     /// Bind this to an NSTableView in the storyboard
-    @IBOutlet public weak var tableView: NSTableView!
+    @IBOutlet open weak var tableView: NSTableView!
     /// Text field which owns this view controller.
     /// Only set after is is returned by the delegate method
-    public weak var owningTextField: SuggestingTextField!
+    public internal(set) weak var owningTextField: SuggestingTextField!
     
     private var localEventMonitor: Any?
     private var window: NSWindow?
-    private var showItems: [Suggestable] = []
+    private var shownItems: [Suggestable] = []
+    weak var selectedItem: Suggestable?
 
-    override public func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
     }
     
     // Do not call super in both. Just not implemented
-    public override func moveDown(_ sender: Any?) {
+    open override func moveDown(_ sender: Any?) {
         setSelectedRow(tableView.selectedRow + 1)
     }
     
-    public override func moveUp(_ sender: Any?) {
+    open override func moveUp(_ sender: Any?) {
         setSelectedRow(tableView.selectedRow - 1)
     }
     
     private func setSelectedRow(_ ix: Int) {
         if ix < 0 || ix >= tableView.numberOfRows { return }
+        selectedItem = shownItems[ix]
         tableView.selectRowIndexes([ix], byExtendingSelection: false)
         //FIXME: Slow
         tableView.scrollRowToVisible(tableView.selectedRow)
@@ -68,7 +70,7 @@ public class SuggestionsViewController: NSViewController {
 // Window mgmt
 extension SuggestionsViewController {
     func show(_ items: [Suggestable]) {
-        showItems = items
+        shownItems = items
         show()
         setSelectedRow(0)
         tableView.enclosingScrollView!.flashScrollers()
@@ -91,7 +93,7 @@ extension SuggestionsViewController {
         }
     }
     
-    func show() {
+    private func show() {
         if window == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 20, height: 20),
                                   styleMask: .borderless,
@@ -129,6 +131,11 @@ extension SuggestionsViewController {
             scrollView.drawsBackground = false
             scrollView.borderType = .noBorder
             tableView.backgroundColor = .clear
+            tableView.selectionHighlightStyle = .regular
+            tableView.allowsTypeSelect = false
+            tableView.allowsEmptySelection = false
+            tableView.allowsMultipleSelection = false
+            tableView.headerView = nil
 
             // Close when we select a different app
             NotificationCenter.default.addObserver(self,
@@ -190,16 +197,16 @@ extension SuggestionsViewController {
 
 extension SuggestionsViewController: NSTableViewDelegate {
     public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        return owningTextField.suggestionDelegate?.viewFor(tableView, item: showItems[row])
+        return owningTextField.suggestionDelegate?.viewFor(tableView, item: shownItems[row])
     }
 }
 
 extension SuggestionsViewController: NSTableViewDataSource {
     public func numberOfRows(in tableView: NSTableView) -> Int {
-        return showItems.count
+        return shownItems.count
     }
     
     public func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        return showItems[row]
+        return shownItems[row]
     }
 }

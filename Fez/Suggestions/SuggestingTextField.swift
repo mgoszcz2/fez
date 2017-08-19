@@ -21,20 +21,26 @@ public protocol SuggestionDelegate: class {
     func controllerFor(_ textField: SuggestingTextField) -> SuggestionsViewController;
 }
 
-public class SuggestingTextField: NSSearchField {
+open class SuggestingTextField: NSSearchField {
     /// Delegate
-    public weak var suggestionDelegate: SuggestionDelegate?
+    open weak var suggestionDelegate: SuggestionDelegate?
+    /// Selector to use when a selection is made
+    public var selectionAction: Selector?
+    /// Target for selection action. First argument text field, second the item
+    public weak var selectionTarget: AnyObject?
     /// Maximum number of suggestions
-    @IBInspectable public var suggestionsLimit: Int = 10
+    @IBInspectable open var suggestionsLimit: Int = 10
+    /// Suggestion controller of this text field
+    public private(set) var suggestionsController: SuggestionsViewController?
+    /// Currently selected item if any
+    public var selectedItem: Suggestable? { return suggestionsController?.selectedItem }
     
-    private var suggestionsController: SuggestionsViewController?
-    
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
     }
     
-    public override func becomeFirstResponder() -> Bool {
+    open override func becomeFirstResponder() -> Bool {
         super.becomeFirstResponder()
         if suggestionsLimit <= 0 { return true }
         
@@ -44,18 +50,37 @@ public class SuggestingTextField: NSSearchField {
             suggestionsController = ctrl
         }
         
-        suggestionsController?.show(suggestionDelegate!.suggestionFor(self))
+        showSuggestions()
         return true
     }
+    
+    private func showSuggestions() {
+        suggestionsController?.show(suggestionDelegate!.suggestionFor(self).filter {
+            $0.title.lowercased().contains(stringValue.lowercased()) || stringValue.isEmpty
+        })
+    }
+    
+    /// Send out action that an item has been selected. Clears the input
+    open func sendSelectedItem() {
+        if selectedItem == nil { return }
+        let _ = selectionTarget?.perform(selectionAction!, with: self)
+        closeSuggestions()
+        stringValue = ""
+    }
 
-    // Close suggestions window externally
+    /// Close suggestions window externally
     public func closeSuggestions() {
         suggestionsController?.close()
+    }
+    
+    /// Read in new data for suggestions
+    open func reloadData() {
+        showSuggestions()
     }
 }
 
 extension SuggestingTextField: NSSearchFieldDelegate {
-    public func control(_ control: NSControl,
+    open func control(_ control: NSControl,
                         textView: NSTextView,
                         doCommandBy commandSelector: Selector) -> Bool {
         if commandSelector == #selector(moveUp(_:)) {
@@ -70,20 +95,19 @@ extension SuggestingTextField: NSSearchFieldDelegate {
             suggestionsController?.close()
             return true
         } else if commandSelector == #selector(insertNewline(_:)) {
+            sendSelectedItem()
             return true
         }
         return false
     }
     
-    public override func textDidChange(_ notification: Notification) {
+    open override func textDidChange(_ notification: Notification) {
         super.textDidChange(notification)
-        suggestionsController?.show(suggestionDelegate!.suggestionFor(self).filter {
-            $0.title.lowercased().contains(stringValue.lowercased()) || stringValue.isEmpty
-        })
+        showSuggestions()
     }
     
-    public override func textDidEndEditing(_ notification: Notification) {
+    open override func textDidEndEditing(_ notification: Notification) {
         super.textDidEndEditing(notification)
-        suggestionsController?.close()
+        closeSuggestions()
     }
 }

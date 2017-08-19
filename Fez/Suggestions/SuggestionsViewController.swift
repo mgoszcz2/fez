@@ -8,10 +8,13 @@
 
 import Cocoa
 
+private let cornerRadius: CGFloat = 5
+
 // Thank you https://github.com/marcomasser/OverlayTest
 private func maskImage(radius: CGFloat) -> NSImage {
     let edgeLength = 2 * radius + 1 // One pixel stripe that isn't an edge inset
-    let maskImage = NSImage(size: NSSize(width: edgeLength, height: edgeLength), flipped: false) { rect in
+    let maskSize = NSSize(width: edgeLength, height: edgeLength)
+    let maskImage = NSImage(size: maskSize, flipped: false) { rect in
         NSColor.black.set()
         NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
         return true
@@ -68,6 +71,7 @@ extension SuggestionsViewController {
         showItems = items
         show()
         setSelectedRow(0)
+        tableView.enclosingScrollView!.flashScrollers()
     }
     
     private func processEvent(_ event: NSEvent) {
@@ -96,19 +100,35 @@ extension SuggestionsViewController {
             window.hasShadow = true
             window.backgroundColor = .clear
             window.isOpaque = false
-            window.animationBehavior = .utilityWindow
             
             let effect = NSVisualEffectView(frame: NSRect(origin: .zero,
                                                           size: window.frame.size))
             effect.material = .menu
             effect.state = .active
-            effect.maskImage = maskImage(radius: 5)
+            effect.maskImage = maskImage(radius: cornerRadius)
             effect.addSubview(view)
-            view.frame = effect.bounds
-            view.autoresizingMask = .fill
+            
+            // Zero margin
+            view.translatesAutoresizingMaskIntoConstraints = false
+            effect.addConstraints([view.topAnchor.constraint(equalTo: effect.topAnchor),
+                                   view.bottomAnchor.constraint(equalTo: effect.bottomAnchor),
+                                   view.leftAnchor.constraint(equalTo: effect.leftAnchor),
+                                   view.rightAnchor.constraint(equalTo: effect.rightAnchor)])
             
             window.contentView = effect
             self.window = window
+            
+            // Table view is loaded now
+            let scrollView = tableView.enclosingScrollView!
+            scrollView.automaticallyAdjustsContentInsets = false
+            scrollView.contentInsets = NSEdgeInsets(top: cornerRadius,
+                                                    left: 0,
+                                                    bottom: cornerRadius,
+                                                    right: 0)
+            scrollView.verticalScrollElasticity = .none
+            scrollView.drawsBackground = false
+            scrollView.borderType = .noBorder
+            tableView.backgroundColor = .clear
 
             // Close when we select a different app
             NotificationCenter.default.addObserver(self,
@@ -126,8 +146,12 @@ extension SuggestionsViewController {
         
         // Change frame
         tableView.reloadData()
-        window!.setFrame(calculateFrame(), display: true)
+        if tableView.numberOfRows == 0 {
+            close()
+            return
+        }
         
+        window!.setFrame(calculateFrame(), display: true)
         if !window!.isVisible {
             // For some stupid reason we need to do this here
             // Otherwise it does not register as a child
@@ -141,8 +165,17 @@ extension SuggestionsViewController {
     private func calculateFrame() -> NSRect {
         let lastRow = min(tableView.numberOfRows - 1,
                           owningTextField.suggestionsLimit - 1)
-        let lastRowRect = tableView.convert(tableView.rect(ofRow: max(lastRow, 0)), to: view)
-        let height: CGFloat = view.bounds.height - lastRowRect.minY
+        // No need to convert since in scroll view
+        let lastRowRect = tableView.rect(ofRow: max(lastRow, 0))
+        
+        // Table view is flipped by default it seems
+        // Do not forget about content insets for corners
+        let rowBottom = lastRowRect.height + lastRowRect.minY + cornerRadius * 2
+        let scrollRect = view.convert(tableView.enclosingScrollView!.frame,
+                                      from: tableView.enclosingScrollView)
+        let tableOffset = view.bounds.height - scrollRect.minX - scrollRect.height
+        let height = tableOffset + rowBottom
+        
         var frame = owningTextField.screenFrame
             .offsetBy(dx: 0, dy: -height - 3)
         frame.size.height = height

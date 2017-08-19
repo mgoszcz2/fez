@@ -8,6 +8,19 @@
 
 import Cocoa
 
+// Thank you https://github.com/marcomasser/OverlayTest
+private func maskImage(radius: CGFloat) -> NSImage {
+    let edgeLength = 2 * radius + 1 // One pixel stripe that isn't an edge inset
+    let maskImage = NSImage(size: NSSize(width: edgeLength, height: edgeLength), flipped: false) { rect in
+        NSColor.black.set()
+        NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius).fill()
+        return true
+    }
+    maskImage.capInsets = NSEdgeInsets(top: radius, left: radius, bottom: radius, right: radius)
+    maskImage.resizingMode = .stretch
+    return maskImage
+}
+
 public class SuggestionsViewController: NSViewController {
     /// Bind this to an NSTableView in the storyboard
     @IBOutlet public weak var tableView: NSTableView!
@@ -81,14 +94,15 @@ extension SuggestionsViewController {
                                   backing: .buffered,
                                   defer: false) // Do not defer
             window.hasShadow = true
-            window.isOpaque = false
             window.backgroundColor = .clear
+            window.isOpaque = false
             window.animationBehavior = .utilityWindow
             
             let effect = NSVisualEffectView(frame: NSRect(origin: .zero,
                                                           size: window.frame.size))
             effect.material = .menu
             effect.state = .active
+            effect.maskImage = maskImage(radius: 5)
             effect.addSubview(view)
             view.frame = effect.bounds
             view.autoresizingMask = .fill

@@ -88,6 +88,7 @@ extension SuggestingTextField: NSSearchFieldDelegate {
             return true
             
         } else if commandSelector == #selector(moveDown(_:)) {
+            //FIXME: Show suggestions if not
             suggestionsController?.moveDown(self)
             return true
             

@@ -34,7 +34,18 @@ open class SuggestionsViewController: NSViewController {
     private var localEventMonitor: Any?
     private var window: NSWindow?
     private var shownItems: [Suggestable] = []
-    weak var selectedItem: Suggestable?
+    // TrackingRowView uses this to ignore mouseEnter
+    private var lastIgnoreRequest: TimeInterval = 0
+    // Ignore next 0.25s of mouse events (except moves)
+    var shouldIgnoreMouseEnterEvent: Bool {
+        let now = ProcessInfo().systemUptime
+        return now - lastIgnoreRequest < 0.25
+    }
+    
+    weak var selectedItem: Suggestable? {
+        if tableView.selectedRow < 0 || !window!.isVisible { return nil }
+        return shownItems[tableView.selectedRow]
+    }
 
     open override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,21 +53,43 @@ open class SuggestionsViewController: NSViewController {
         tableView.delegate = self
     }
     
+    private func ignoreMouse() {
+        lastIgnoreRequest = ProcessInfo().systemUptime
+    }
+    
     // Do not call super in both. Just not implemented
     open override func moveDown(_ sender: Any?) {
+        ignoreMouse()
         setSelectedRow(tableView.selectedRow + 1)
     }
     
     open override func moveUp(_ sender: Any?) {
+        ignoreMouse()
         setSelectedRow(tableView.selectedRow - 1)
     }
     
     private func setSelectedRow(_ ix: Int) {
         if ix < 0 || ix >= tableView.numberOfRows { return }
-        selectedItem = shownItems[ix]
+
+        let clipView = tableView.enclosingScrollView!.contentView
+        let rowRect = tableView.rect(ofRow: ix)
+        if !clipView.documentVisibleRect.contains(rowRect) {
+            if rowRect.minY > clipView.bounds.minY {
+                // Top side of rowrect is below top of clip view, we are scrolling down
+                // Make bottom side of rowrect bottom of clip view
+                clipView.setBoundsOrigin(NSPoint(x: 0, y:
+                    rowRect.maxY - clipView.bounds.height + cornerRadius))
+            } else {
+                clipView.setBoundsOrigin(NSPoint(x: 0, y:
+                    rowRect.minY - cornerRadius))
+            }
+        }
+    
         tableView.selectRowIndexes([ix], byExtendingSelection: false)
-        //FIXME: Slow
-        tableView.scrollRowToVisible(tableView.selectedRow)
+    }
+    
+    @objc private func tableClicked(_ sender: Any) {
+        owningTextField.sendSelectedItem()
     }
     
     deinit {
@@ -72,6 +105,7 @@ extension SuggestionsViewController {
     func show(_ items: [Suggestable]) {
         shownItems = items
         show()
+        ignoreMouse()
         setSelectedRow(0)
         tableView.enclosingScrollView!.flashScrollers()
     }
@@ -136,6 +170,10 @@ extension SuggestionsViewController {
             tableView.allowsEmptySelection = false
             tableView.allowsMultipleSelection = false
             tableView.headerView = nil
+            
+            // Single clicks
+            tableView.target = self
+            tableView.action = #selector(tableClicked(_:))
 
             // Close when we select a different app
             NotificationCenter.default.addObserver(self,
@@ -196,8 +234,20 @@ extension SuggestionsViewController {
 }
 
 extension SuggestionsViewController: NSTableViewDelegate {
-    public func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    public func tableView(_ tableView: NSTableView,
+                          viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         return owningTextField.suggestionDelegate?.viewFor(tableView, item: shownItems[row])
+    }
+    
+    public func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        let id = NSUserInterfaceItemIdentifier("TrackingRow")
+        let reused = tableView.makeView(withIdentifier: id, owner: nil) as? NSTableRowView
+        
+        if reused != nil { return reused }
+        let fresh = TrackingRowView()
+        fresh.owningSuggestionsController = self
+        fresh.identifier = id
+        return fresh
     }
 }
 
@@ -206,7 +256,8 @@ extension SuggestionsViewController: NSTableViewDataSource {
         return shownItems.count
     }
     
-    public func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
+    public func tableView(_ tableView: NSTableView,
+                          objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
         return shownItems[row]
     }
 }

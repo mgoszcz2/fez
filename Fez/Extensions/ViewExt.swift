@@ -35,4 +35,14 @@ public extension NSView {
         }
         return nil
     }
+    
+    func edges(to otherView: NSView) {
+        otherView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: otherView.topAnchor),
+            bottomAnchor.constraint(equalTo: otherView.bottomAnchor),
+            leftAnchor.constraint(equalTo: otherView.leftAnchor),
+            rightAnchor.constraint(equalTo: otherView.rightAnchor)
+        ])
+    }
 }

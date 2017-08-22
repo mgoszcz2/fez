@@ -19,6 +19,7 @@
 		524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524570431F4633C800053D45 /* AnimationContextExt.swift */; };
 		528E1C8F1F47479000A13C82 /* WindowExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528E1C8E1F47479000A13C82 /* WindowExt.swift */; };
 		52AA111C1F44DC2F008786F2 /* Fez.h in Headers */ = {isa = PBXBuildFile; fileRef = 52AA111A1F44DC2F008786F2 /* Fez.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		52E87DA41F4B6A90009983BB /* TableViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E87DA31F4B6A90009983BB /* TableViewExt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestingTextField.swift; sourceTree = "<group>"; };
 		52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsViewController.swift; sourceTree = "<group>"; };
 		52AA11251F44DEFC008786F2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		52E87DA31F4B6A90009983BB /* TableViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				521C1D5E1F46259C00D610B2 /* ViewExt.swift */,
 				524570431F4633C800053D45 /* AnimationContextExt.swift */,
 				528E1C8E1F47479000A13C82 /* WindowExt.swift */,
+				52E87DA31F4B6A90009983BB /* TableViewExt.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 				523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */,
 				521C1D571F46238900D610B2 /* UrlExt.swift in Sources */,
 				521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */,
+				52E87DA41F4B6A90009983BB /* TableViewExt.swift in Sources */,
 				523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */,
 				524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */,
 				522EF5E61F4B20D0007492F5 /* TrackingRowView.swift in Sources */,

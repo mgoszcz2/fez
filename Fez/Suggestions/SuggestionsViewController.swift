@@ -146,10 +146,7 @@ extension SuggestionsViewController {
             
             // Zero margin
             view.translatesAutoresizingMaskIntoConstraints = false
-            effect.addConstraints([view.topAnchor.constraint(equalTo: effect.topAnchor),
-                                   view.bottomAnchor.constraint(equalTo: effect.bottomAnchor),
-                                   view.leftAnchor.constraint(equalTo: effect.leftAnchor),
-                                   view.rightAnchor.constraint(equalTo: effect.rightAnchor)])
+            view.edges(to: effect)
             
             window.contentView = effect
             self.window = window
@@ -161,6 +158,10 @@ extension SuggestionsViewController {
                                                     left: 0,
                                                     bottom: cornerRadius,
                                                     right: 0)
+            // Not sure why this works the way it doesn. But negative bounds work.
+            // But only if we re-layout first
+            scrollView.layoutSubtreeIfNeeded()
+            scrollView.contentView.setBoundsOrigin(NSPoint(x: 0, y: -cornerRadius))
             scrollView.verticalScrollElasticity = .none
             scrollView.drawsBackground = false
             scrollView.borderType = .noBorder
@@ -208,6 +209,9 @@ extension SuggestionsViewController {
     }
     
     private func calculateFrame() -> NSRect {
+        // Important otherwise first time around we might get wrong sizes
+        window!.layoutIfNeeded()
+        
         let lastRow = min(tableView.numberOfRows - 1,
                           owningTextField.suggestionsLimit - 1)
         // No need to convert since in scroll view
@@ -218,7 +222,7 @@ extension SuggestionsViewController {
         let rowBottom = lastRowRect.height + lastRowRect.minY + cornerRadius * 2
         let scrollRect = view.convert(tableView.enclosingScrollView!.frame,
                                       from: tableView.enclosingScrollView)
-        let tableOffset = view.bounds.height - scrollRect.minX - scrollRect.height
+        let tableOffset = view.bounds.height - scrollRect.minY - scrollRect.height
         let height = tableOffset + rowBottom
         
         var frame = owningTextField.screenFrame

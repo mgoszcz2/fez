@@ -32,7 +32,7 @@ open class SuggestionsViewController: NSViewController {
     public internal(set) weak var owningTextField: SuggestingTextField!
     
     private var localEventMonitor: Any?
-    private var window: NSWindow?
+    private var window: FadeInWindow?
     private var shownItems: [Suggestable] = []
     // TrackingRowView uses this to ignore mouseEnter
     private var lastIgnoreRequest: TimeInterval = 0
@@ -102,11 +102,17 @@ open class SuggestionsViewController: NSViewController {
 
 // Window mgmt
 extension SuggestionsViewController {
-    func show(_ items: [Suggestable]) {
+    func updateItems(_ items: [Suggestable]) {
         shownItems = items
-        show()
-        ignoreMouse()
+        tableView?.reloadData() // Note question mark
+    }
+    
+    func showItems(_ items: [Suggestable], animate: Bool) {
+        updateItems(items)
+        show(animate: animate)
+        // Select first row when typing or first responder
         setSelectedRow(0)
+        ignoreMouse()
         tableView.enclosingScrollView!.flashScrollers()
     }
     
@@ -118,7 +124,7 @@ extension SuggestionsViewController {
             // Note: Hitting nil should also close window
             let hit = event.window?.hitTest(event)
             if hit != nil && (hit == owningTextField || hit == owningTextField.currentEditor()) {
-                show()
+                show(animate: true)
             } else {
                 close()
             }
@@ -127,27 +133,24 @@ extension SuggestionsViewController {
         }
     }
     
-    private func show() {
+    private func show(animate: Bool) {
         if window == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 20, height: 20),
-                                  styleMask: .borderless,
-                                  backing: .buffered,
-                                  defer: false) // Do not defer
+            let window = FadeInWindow(contentRect: NSRect(x: 0, y: 0, width: 20, height: 20),
+                                      styleMask: .borderless,
+                                      backing: .buffered,
+                                      defer: false) // Do not defer
             window.hasShadow = true
             window.backgroundColor = .clear
             window.isOpaque = false
             
-            let effect = NSVisualEffectView(frame: NSRect(origin: .zero,
-                                                          size: window.frame.size))
+            // Wrap us in an effect view
+            let effect = NSVisualEffectView(frame: NSRect(origin: .zero, size: window.frame.size))
             effect.material = .menu
             effect.state = .active
             effect.maskImage = maskImage(radius: cornerRadius)
             effect.addSubview(view)
-            
-            // Zero margin
             view.translatesAutoresizingMaskIntoConstraints = false
             view.edges(to: effect)
-            
             window.contentView = effect
             self.window = window
             
@@ -191,7 +194,6 @@ extension SuggestionsViewController {
         }
         
         // Change frame
-        tableView.reloadData()
         if tableView.numberOfRows == 0 {
             close()
             return
@@ -204,7 +206,14 @@ extension SuggestionsViewController {
             // CustomMenus also does it in this order, but fails to mention why
             // Also orderOut removes the child so we don't care ourselves
             owningTextField.window!.addChildWindow(self.window!, ordered: .above)
-            window!.orderFront(self)
+            if animate {
+                window!.orderFrontAnimating(sender: self)
+            } else {
+                window!.orderFront(self)
+            }
+            // Show first item when showing window for any reason
+            ignoreMouse()
+            setSelectedRow(0)
         }
     }
     

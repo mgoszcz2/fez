@@ -50,14 +50,12 @@ open class SuggestingTextField: NSSearchField {
             suggestionsController = ctrl
         }
         
-        showSuggestions()
+        showSuggestions(animate: true)
         return true
     }
     
-    private func showSuggestions() {
-        suggestionsController?.show(suggestionDelegate!.suggestionFor(self).filter {
-            $0.title.lowercased().contains(stringValue.lowercased()) || stringValue.isEmpty
-        })
+    private func showSuggestions(animate: Bool) {
+        suggestionsController?.showItems(suggestions(), animate: animate)
     }
     
     /// Send out action that an item has been selected. Clears the input
@@ -67,6 +65,12 @@ open class SuggestingTextField: NSSearchField {
         closeSuggestions()
         stringValue = ""
     }
+    
+    private func suggestions() -> [Suggestable] {
+        return suggestionDelegate!.suggestionFor(self).filter {
+            $0.title.lowercased().contains(stringValue.lowercased()) || stringValue.isEmpty
+        }
+    }
 
     /// Close suggestions window externally
     public func closeSuggestions() {
@@ -75,7 +79,7 @@ open class SuggestingTextField: NSSearchField {
     
     /// Read in new data for suggestions
     open func reloadData() {
-        showSuggestions()
+        suggestionsController?.updateItems(suggestions())
     }
 }
 
@@ -104,7 +108,7 @@ extension SuggestingTextField: NSSearchFieldDelegate {
     
     open override func textDidChange(_ notification: Notification) {
         super.textDidChange(notification)
-        showSuggestions()
+        showSuggestions(animate: false)
     }
     
     open override func textDidEndEditing(_ notification: Notification) {

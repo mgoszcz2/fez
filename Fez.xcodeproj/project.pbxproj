@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		520FBC251F4E533000E2DF33 /* DataExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520FBC241F4E533000E2DF33 /* DataExt.swift */; };
+		520FBC281F4EE02F00E2DF33 /* TintedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520FBC271F4EE02F00E2DF33 /* TintedImageView.swift */; };
 		521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D4D1F4622DA00D610B2 /* MenuExt.swift */; };
 		521C1D571F46238900D610B2 /* UrlExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D561F46238900D610B2 /* UrlExt.swift */; };
 		521C1D591F46246A00D610B2 /* BoolExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D581F46246A00D610B2 /* BoolExt.swift */; };
@@ -14,6 +16,7 @@
 		521C1D5D1F46253900D610B2 /* LayoutConstraintExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */; };
 		521C1D5F1F46259C00D610B2 /* ViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C1D5E1F46259C00D610B2 /* ViewExt.swift */; };
 		522EF5E61F4B20D0007492F5 /* TrackingRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522EF5E51F4B20D0007492F5 /* TrackingRowView.swift */; };
+		5230FDE81F4EFA4000FC6AD4 /* SegmentActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5230FDE71F4EFA4000FC6AD4 /* SegmentActionHandler.swift */; };
 		523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11231F44DE6D008786F2 /* SuggestingTextField.swift */; };
 		523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA11241F44DE6D008786F2 /* SuggestionsViewController.swift */; };
 		524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524570431F4633C800053D45 /* AnimationContextExt.swift */; };
@@ -26,6 +29,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		520FBC241F4E533000E2DF33 /* DataExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExt.swift; sourceTree = "<group>"; };
+		520FBC271F4EE02F00E2DF33 /* TintedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TintedImageView.swift; sourceTree = "<group>"; };
 		521C1D4D1F4622DA00D610B2 /* MenuExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuExt.swift; sourceTree = "<group>"; };
 		521C1D561F46238900D610B2 /* UrlExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlExt.swift; sourceTree = "<group>"; };
 		521C1D581F46246A00D610B2 /* BoolExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoolExt.swift; sourceTree = "<group>"; };
@@ -33,6 +38,7 @@
 		521C1D5C1F46253900D610B2 /* LayoutConstraintExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutConstraintExt.swift; sourceTree = "<group>"; };
 		521C1D5E1F46259C00D610B2 /* ViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExt.swift; sourceTree = "<group>"; };
 		522EF5E51F4B20D0007492F5 /* TrackingRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingRowView.swift; sourceTree = "<group>"; };
+		5230FDE71F4EFA4000FC6AD4 /* SegmentActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentActionHandler.swift; sourceTree = "<group>"; };
 		524570431F4633C800053D45 /* AnimationContextExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationContextExt.swift; sourceTree = "<group>"; };
 		528467611F4DCBDB008B0667 /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
 		528E1C8E1F47479000A13C82 /* WindowExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExt.swift; sourceTree = "<group>"; };
@@ -70,8 +76,26 @@
 				524570431F4633C800053D45 /* AnimationContextExt.swift */,
 				528E1C8E1F47479000A13C82 /* WindowExt.swift */,
 				52E87DA31F4B6A90009983BB /* TableViewExt.swift */,
+				520FBC241F4E533000E2DF33 /* DataExt.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5223D9A71F4F55EC0059B65F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				520FBC271F4EE02F00E2DF33 /* TintedImageView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5230FDE91F4EFAD800FC6AD4 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				528467611F4DCBDB008B0667 /* DisplayLink.swift */,
+				5230FDE71F4EFA4000FC6AD4 /* SegmentActionHandler.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		52AA110D1F44DC2F008786F2 = {
@@ -94,9 +118,10 @@
 		52AA11191F44DC2F008786F2 /* Fez */ = {
 			isa = PBXGroup;
 			children = (
-				528467611F4DCBDB008B0667 /* DisplayLink.swift */,
 				52F61FDC1F4DA1DB004EC7BC /* FadeInWindow.swift */,
 				52F61FDA1F4D923F004EC7BC /* PrivateExt.swift */,
+				5223D9A71F4F55EC0059B65F /* Views */,
+				5230FDE91F4EFAD800FC6AD4 /* Utils */,
 				521C1D431F46223A00D610B2 /* Extensions */,
 				52AA11221F44DE18008786F2 /* Suggestions */,
 				52AA111A1F44DC2F008786F2 /* Fez.h */,
@@ -197,14 +222,17 @@
 				521C1D5D1F46253900D610B2 /* LayoutConstraintExt.swift in Sources */,
 				521C1D5B1F4624E200D610B2 /* ImageExt.swift in Sources */,
 				523585821F44F47B00E7A182 /* SuggestionsViewController.swift in Sources */,
+				520FBC251F4E533000E2DF33 /* DataExt.swift in Sources */,
 				521C1D571F46238900D610B2 /* UrlExt.swift in Sources */,
 				521C1D4E1F4622DA00D610B2 /* MenuExt.swift in Sources */,
+				5230FDE81F4EFA4000FC6AD4 /* SegmentActionHandler.swift in Sources */,
 				52E87DA41F4B6A90009983BB /* TableViewExt.swift in Sources */,
 				523585811F44F47900E7A182 /* SuggestingTextField.swift in Sources */,
 				52F61FDB1F4D923F004EC7BC /* PrivateExt.swift in Sources */,
 				524570441F4633C800053D45 /* AnimationContextExt.swift in Sources */,
 				522EF5E61F4B20D0007492F5 /* TrackingRowView.swift in Sources */,
 				528467621F4DCBDB008B0667 /* DisplayLink.swift in Sources */,
+				520FBC281F4EE02F00E2DF33 /* TintedImageView.swift in Sources */,
 				528E1C8F1F47479000A13C82 /* WindowExt.swift in Sources */,
 				521C1D5F1F46259C00D610B2 /* ViewExt.swift in Sources */,
 				52F61FDD1F4DA1DB004EC7BC /* FadeInWindow.swift in Sources */,

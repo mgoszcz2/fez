@@ -8,8 +8,13 @@
 
 import Foundation
 
-@objc fileprivate protocol _NSWindowPrivate {
+@objc private protocol _NSWindowPrivate {
     func _setTransformForAnimation(_: CGAffineTransform, anchorPoint: CGPoint)
+}
+
+@objc private protocol _NSMenuItemPrivate {
+    func _setViewHandlesEvents(_: Bool)
+    func _viewHandlesEvents() -> Bool
 }
 
 public extension NSWindow {
@@ -21,5 +26,16 @@ public extension NSWindow {
         let transform = CGAffineTransform(scaleX: 1.0 / scale, y: 1.0 / scale)
         unsafeBitCast(self, to: _NSWindowPrivate.self)
             ._setTransformForAnimation(transform, anchorPoint: realAnchor)
+    }
+}
+
+public extension NSMenuItem {
+    public var viewHandlesEvents: Bool {
+        set {
+            unsafeBitCast(self, to: _NSMenuItemPrivate.self)._setViewHandlesEvents(newValue)
+        }
+        get {
+            return unsafeBitCast(self, to: _NSMenuItemPrivate.self)._viewHandlesEvents()
+        }
     }
 }

@@ -1,6 +1,6 @@
 //
 //  SuggestingTextField.swift
-//  Warzone
+//  Fez
 //
 //  Created by Maciej Goszczycki on 16/08/2017.
 //  Copyright © 2017 Maciej. All rights reserved.
